@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <GlobalPackageReference Include="Microsoft.SourceLink.AzureRepos.Git">
+      <Version>8.0.0</Version>
+    </GlobalPackageReference>
+    <GlobalPackageReference Include="PolySharp">
+      <Version>1.15.0</Version>
+    </GlobalPackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageVersion Include="FredrikHr.PowerPlatformSdkExtensions.MSBuild.PluginPackage">
+      <Version>1.42.1</Version>
+    </PackageVersion>
+    <PackageVersion Include="FredrikHr.PowerPlatformSdkExtensions.MSBuild.Solution">
+      <Version>1.42.1</Version>
+    </PackageVersion>
+  </ItemGroup>
+</Project>

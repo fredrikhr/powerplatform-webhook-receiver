@@ -1,0 +1,16 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["*_openapidefinition.json"],
+      "url": "https://github.com/OAI/OpenAPI-Specification/raw/main/schemas/v2.0/schema.json"
+    },
+    {
+      "fileMatch": ["Workflows/*.json"],
+      "url": "https://arvadev.blob.core.windows.net/public-dataverse-schema/json/workflow.clientData.json"
+    }
+  ],
+  "xml.format.preserveAttributeLineBreaks": true,
+  "xml.format.splitAttributes": "preserve",
+  "xml.format.spaceBeforeEmptyCloseTag": true,
+  "xml.format.closingBracketNewLine": true
+}

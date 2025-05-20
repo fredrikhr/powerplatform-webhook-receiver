@@ -1,0 +1,157 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // solutions/SharePointOnlineWebhookReceiver
+    {
+      "label": "SharePointOnlineWebhookReceiver | Build solution (Unmanaged)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "--configuration:Debug",
+        "solutions/SharePointOnlineWebhookReceiver"
+      ],
+      "dependsOn": [],
+      "problemMatcher": "$msCompile",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      }
+    },
+    {
+      "label": "SharePointOnlineWebhookReceiver | Push to Power Platform (Unmanaged)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "tool",
+        "run",
+        "pac",
+        "--",
+        "solution",
+        "import",
+        "--async",
+        "--activate-plugins",
+        "--path",
+        "bin/SharePointOnlineWebhookReceiver/Debug/SharePointOnlineWebhookReceiver.zip"
+      ],
+      "dependsOn": ["SharePointOnlineWebhookReceiver | Build solution (Unmanaged)"],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      }
+    },
+    {
+      "label": "SharePointOnlineWebhookReceiver | Push and Publish to Power Platform (Unmanaged)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "tool",
+        "run",
+        "pac",
+        "--",
+        "solution",
+        "import",
+        "--async",
+        "--activate-plugins",
+        "--publish-changes",
+        "--path",
+        "bin/SharePointOnlineWebhookReceiver/Debug/SharePointOnlineWebhookReceiver.zip"
+      ],
+      "dependsOn": ["SharePointOnlineWebhookReceiver | Build solution (Unmanaged)"],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      }
+    },
+    {
+      "label": "SharePointOnlineWebhookReceiver | Pull from Power Platform (Unmanaged)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "tool",
+        "run",
+        "pac",
+        "--",
+        "solution",
+        "sync",
+        "--async",
+        "--packagetype",
+        "Unmanaged",
+        "--solution-folder",
+        "solutions/SharePointOnlineWebhookReceiver/src"
+      ],
+      "dependsOn": [],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      }
+    },
+    {
+      "label": "SharePointOnlineWebhookReceiver | Build solution (Managed)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "--configuration:Release",
+        "solutions/SharePointOnlineWebhookReceiver"
+      ],
+      "dependsOn": [],
+      "problemMatcher": "$msCompile",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      }
+    },
+    {
+      "label": "SharePointOnlineWebhookReceiver | Push and Publish to Power Platform (Managed)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "tool",
+        "run",
+        "pac",
+        "--",
+        "solution",
+        "import",
+        "--async",
+        "--activate-plugins",
+        "--publish-changes",
+        "--path",
+        "bin/SharePointOnlineWebhookReceiver/Release/SharePointOnlineWebhookReceiver.zip"
+      ],
+      "dependsOn": ["SharePointOnlineWebhookReceiver | Build solution (Managed)"],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      }
+    },
+  ]
+}
