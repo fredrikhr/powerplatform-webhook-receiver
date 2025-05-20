@@ -21,7 +21,23 @@
       <CustomizationOptionValuePrefix>79884</CustomizationOptionValuePrefix>
       <Addresses />
     </Publisher>
-    <RootComponents />
-    <MissingDependencies />
+    <RootComponents>
+      <RootComponent type="29" id="{011e684a-6535-f011-8c4d-000d3aac0dd8}" behavior="0" />
+      <RootComponent type="29" id="{9cb7b830-6635-f011-8c4d-000d3aac0dd8}" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="1" schemaName="environmentvariabledefinition" displayName="Environment Variable Definition" solution="EnvironmentVariables (1.0.2406.4)">
+          <package appName="EnvironmentVariables" version="1.0.2406.4">EnvironmentVariablesSolutionAnchor (1.0.2406.4)</package>
+        </Required>
+        <Dependent type="29" displayName="SharePoint Online Webhook Receiver | Update Callback URL Variable" id="{9cb7b830-6635-f011-8c4d-000d3aac0dd8}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="environmentvariablevalue" displayName="Environment Variable Value" solution="EnvironmentVariables (1.0.2406.4)">
+          <package appName="EnvironmentVariables" version="1.0.2406.4">EnvironmentVariablesSolutionAnchor (1.0.2406.4)</package>
+        </Required>
+        <Dependent type="29" displayName="SharePoint Online Webhook Receiver | Update Callback URL Variable" id="{9cb7b830-6635-f011-8c4d-000d3aac0dd8}" />
+      </MissingDependency>
+    </MissingDependencies>
   </SolutionManifest>
 </ImportExportXml>

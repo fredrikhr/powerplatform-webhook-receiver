@@ -1,0 +1,218 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "dataverse": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "spo_webhookreceiver_dataverse_connection"
+        },
+        "runtimeSource": "embedded",
+        "impersonation": {
+          "source": "invoker"
+        }
+      },
+      "powerautomatemanagement": {
+        "api": {
+          "name": "shared_flowmanagement"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "spo_webhookreceiver_powerautomatemanagement_connection"
+        },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Notification_Callback_Workflow_Entity": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "workflows",
+              "recordId": "011e684a-6535-f011-8c4d-000d3aac0dd8",
+              "$select": "workflowid,workflowidunique,category,statecode,statuscode,name"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "dataverse"
+            }
+          }
+        },
+        "Notification_Callback_URL": {
+          "runAfter": {
+            "Notification_Callback_Workflow_Entity": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "environmentName": "@workflow()['tags']['environmentName']",
+              "flowName": "@body('Notification_Callback_Workflow_Entity')['workflowidunique']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement",
+              "operationId": "ListCallbackUrl",
+              "connectionName": "powerautomatemanagement"
+            }
+          }
+        },
+        "Callback_URL_variable_definition": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "environmentvariabledefinitions",
+              "$select": "schemaname,displayname,description,type",
+              "$filter": "schemaname eq 'spo_webhookreceiver_notificationcallbackurl'",
+              "$expand": "environmentvariabledefinition_environmentvariablevalue($select=environmentvariablevalueid,value)",
+              "$top": 1
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "dataverse"
+            }
+          }
+        },
+        "Callback_URL_variable_info": {
+          "runAfter": {
+            "Callback_URL_variable_definition": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": {
+            "definition": "@first(body('Callback_URL_variable_definition')['value'])",
+            "value": "@first(first(body('Callback_URL_variable_definition')['value'])['environmentvariabledefinition_environmentvariablevalue'])"
+          }
+        },
+        "Existing_variable_value_record_when_callback_URL_retrieved": {
+          "runAfter": {
+            "Notification_Callback_URL": [
+              "Succeeded"
+            ],
+            "Callback_URL_variable_info": [
+              "Succeeded"
+            ]
+          },
+          "type": "If",
+          "expression": {
+            "not": {
+              "equals": [
+                "@outputs('Callback_URL_variable_info')['value']",
+                null
+              ]
+            }
+          },
+          "actions": {
+            "Update_existing_variable_record_with_value": {
+              "runAfter": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "environmentvariablevalues",
+                  "recordId": "@outputs('Callback_URL_variable_info')['value']['environmentvariablevalueid']",
+                  "item/value": "@body('Notification_Callback_URL')['response']['value']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "connectionName": "dataverse"
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Create_new_variable_record_with_value": {
+                "runAfter": {},
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "parameters": {
+                    "entityName": "environmentvariablevalues",
+                    "item/value": "@body('Notification_Callback_URL')['response']['value']",
+                    "item/schemaname": "@toUpper(guid())",
+                    "item/EnvironmentVariableDefinitionId@odata.bind": "/environmentvariabledefinitions(@{outputs('Callback_URL_variable_info')['definition']['environmentvariabledefinitionid']})"
+                  },
+                  "host": {
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                    "operationId": "CreateRecord",
+                    "connectionName": "dataverse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Existing_variable_value_record_when_no_callback_URL_retrieved": {
+          "runAfter": {
+            "Notification_Callback_URL": [
+              "Failed"
+            ],
+            "Callback_URL_variable_info": [
+              "Succeeded"
+            ]
+          },
+          "type": "If",
+          "expression": {
+            "not": {
+              "equals": [
+                "@outputs('Callback_URL_variable_info')['value']",
+                null
+              ]
+            }
+          },
+          "actions": {
+            "Delete_existing_variable_record_with_value": {
+              "runAfter": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "environmentvariablevalues",
+                  "recordId": "@outputs('Callback_URL_variable_info')['value']['environmentvariablevalueid']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "DeleteRecord",
+                  "connectionName": "dataverse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

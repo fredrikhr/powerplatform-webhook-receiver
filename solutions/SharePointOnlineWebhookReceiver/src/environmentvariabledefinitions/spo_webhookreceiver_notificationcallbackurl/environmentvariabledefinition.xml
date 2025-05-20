@@ -1,0 +1,11 @@
+<environmentvariabledefinition schemaname="spo_webhookreceiver_notificationcallbackurl">
+  <displayname default="SharePoint Online Webhook Receiver | Notification Callback URL">
+    <label description="SharePoint Online Webhook Receiver | Notification Callback URL" languagecode="1033" />
+    <label description="SharePoint Online Webhook Mottaker | URL for mottak av varslinger" languagecode="1044" />
+  </displayname>
+  <introducedversion>1.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>
