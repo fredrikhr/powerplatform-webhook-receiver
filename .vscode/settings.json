@@ -1,4 +1,5 @@
 {
+  "dotnet.defaultSolution": "Power Platform Webhook Receiver.slnx",
   "json.schemas": [
     {
       "fileMatch": ["*_openapidefinition.json"],
