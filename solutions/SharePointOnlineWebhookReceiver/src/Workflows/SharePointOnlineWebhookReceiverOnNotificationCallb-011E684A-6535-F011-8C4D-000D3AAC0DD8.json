@@ -20,12 +20,67 @@
         }
       },
       "actions": {
-        "Response_No_Content": {
+        "Process_request": {
           "runAfter": {},
-          "type": "Response",
-          "kind": "Http",
-          "inputs": {
-            "statusCode": 204
+          "type": "Switch",
+          "expression": "@if(not(equals(triggerOutputs()?['queries']?['validationtoken'], null)), 'ValidationRequest', 'NotificationPayload')",
+          "cases": {
+            "Validation request": {
+              "case": "ValidationRequest",
+              "actions": {
+                "Response_to_validation_request": {
+                  "runAfter": {},
+                  "type": "Response",
+                  "kind": "Http",
+                  "inputs": {
+                    "statusCode": 200,
+                    "headers": {
+                      "Content-Type": "text/plain; charset=utf-8"
+                    },
+                    "body": "@triggerOutputs()['queries']['validationtoken']"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "actions": {
+              "Notification_count": {
+                "runAfter": {},
+                "type": "Compose",
+                "inputs": "@length(union(triggerBody()['value'], json('[]')))"
+              },
+              "Response_accepted": {
+                "runAfter": {
+                  "Notification_count": [
+                    "Succeeded"
+                  ]
+                },
+                "type": "Response",
+                "kind": "Http",
+                "inputs": {
+                  "statusCode": 202
+                }
+              },
+              "Response_bad_request": {
+                "runAfter": {
+                  "Notification_count": [
+                    "Failed"
+                  ]
+                },
+                "type": "Response",
+                "kind": "Http",
+                "inputs": {
+                  "statusCode": 400,
+                  "body": {
+                    "error": {
+                      "code": "InvalidPayload",
+                      "message": "HTTP request payload must be a valid JSON-payload containing an object at the root of the document, containing at least the property 'value' which must be an array value."
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },

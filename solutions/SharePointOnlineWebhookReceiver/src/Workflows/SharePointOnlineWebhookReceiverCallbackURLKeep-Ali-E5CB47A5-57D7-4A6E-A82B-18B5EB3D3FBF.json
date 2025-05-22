@@ -1,0 +1,47 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "spo_webhookreceiver_notificationcallbackurl": {
+          "type": "String",
+          "metadata": {
+            "schemaName": "spo_webhookreceiver_notificationcallbackurl"
+          }
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "type": "Recurrence",
+          "recurrence": {
+            "interval": 2,
+            "frequency": "Week",
+            "startTime": "2025-05-21T00:00:00Z"
+          }
+        }
+      },
+      "actions": {
+        "Empty_Notification_Callback": {
+          "runAfter": {},
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "@parameters('spo_webhookreceiver_notificationcallbackurl')",
+            "body": {
+              "value": []
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}
