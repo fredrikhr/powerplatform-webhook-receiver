@@ -3,8 +3,10 @@
   "isRoot": true,
   "tools": {
     "microsoft.powerapps.cli.tool": {
-      "version": "1.42.1",
-      "commands": ["pac"],
+      "version": "1.45.3",
+      "commands": [
+        "pac"
+      ],
       "rollForward": true
     }
   }
